@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "674156355483",
+    "project_id": "tailortech-8a377",
+    "storage_bucket": "tailortech-8a377.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674156355483:android:eeacc3993697ecb9e94b3e",
+        "android_client_info": {
+          "package_name": "com.example.dashboard_new"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJX1KS575laIPjyl3tuPvJNxPofNNXryE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

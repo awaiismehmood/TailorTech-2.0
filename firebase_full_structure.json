@@ -1,0 +1,134 @@
+{
+  "project_name": "dashboard_new",
+  "platform": "flutter",
+  "firebase": {
+    "firestore": {
+      "collections": [
+        {
+          "name": "users",
+          "description": "Customer profile data.",
+          "fields": {
+            "id": "String (UID)",
+            "name": "String",
+            "email": "String",
+            "password": "String",
+            "type": "String ('customer')",
+            "phone": "String",
+            "ProfileImageurl": "String (Storage URL)",
+            "online": "Boolean",
+            "timestamp": "Timestamp",
+            "chatlist": "Array<String>"
+          },
+          "subcollections": [
+            {
+              "name": "chat",
+              "id_pattern": "UID_UID",
+              "subcollections": [
+                {
+                  "name": "message",
+                  "fields": {
+                    "senderID": "String",
+                    "senderEmail": "String",
+                    "reciverID": "String",
+                    "message": "String",
+                    "timestamp": "Timestamp"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Tusers",
+          "description": "Tailor profile data.",
+          "fields": {
+            "id": "String (UID)",
+            "name": "String",
+            "email": "String",
+            "password": "String",
+            "Phone": "String",
+            "CNIC": "String",
+            "ProfileImageurl": "String (Storage URL)",
+            "details": "String",
+            "T_type": "String",
+            "images": "Array<String> (Portfolio Portfolio URLS)",
+            "type": "String ('tailor')",
+            "latitude": "Number",
+            "longitude": "Number",
+            "profileSetup": "Boolean",
+            "online": "Boolean",
+            "ratting": "Number",
+            "minPrice": "Number",
+            "maxPrice": "Number",
+            "verified": "Boolean",
+            "timestamp": "Timestamp",
+            "chatlist": "Array<String>"
+          },
+            "subcollections": [
+            {
+              "name": "chat",
+              "id_pattern": "UID_UID",
+              "subcollections": [
+                {
+                  "name": "message",
+                  "fields": {
+                    "senderID": "String",
+                    "senderEmail": "String",
+                    "reciverID": "String",
+                    "message": "String",
+                    "timestamp": "Timestamp"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "orders",
+          "description": "Tailoring order management.",
+          "fields": {
+            "id": "String (Doc ID)",
+            "customerId": "String",
+            "tailorId": "String",
+            "tailorType": "String",
+            "clothesImageUrls": "Array<String>",
+            "designImageUrls": "Array<String>",
+            "details": "String",
+            "expectedTailorId": "String",
+            "status": "String (pending/accepted/completed)",
+            "price": "Number",
+            "ratting": "Number"
+          }
+        }
+      ]
+    },
+    "authentication": {
+      "methods": [
+        "Email/Password",
+        "Email Verification"
+      ],
+      "actions": [
+        "signInWithEmailAndPassword",
+        "createUserWithEmailAndPassword",
+        "signOut",
+        "sendPasswordResetEmail",
+        "sendEmailVerification"
+      ],
+      "persistence": "LOCAL"
+    },
+    "storage": {
+      "buckets": [
+        "default"
+      ],
+      "folders": [
+        "profile_pictures",
+        "Tailor_Pictures",
+        "tailor_images"
+      ]
+    },
+    "realtime_database": {
+      "enabled": false,
+      "usage": "None detected in source code."
+    }
+  }
+}
