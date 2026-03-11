@@ -2,7 +2,6 @@ import 'package:dashboard_new/First_screen/first_screen.dart';
 import 'package:dashboard_new/consts/colors.dart';
 import 'package:dashboard_new/consts/strings.dart';
 import 'package:dashboard_new/consts/styles.dart';
-import 'package:dashboard_new/firebase_initializer.dart';
 import 'package:dashboard_new/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
