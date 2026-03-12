@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dashboard_new/Model_Classes/customer_class.dart';
 import 'package:dashboard_new/Model_Classes/order_class.dart';
-import 'package:dashboard_new/Tailor_views/home_screen/home.dart';
 import 'package:dashboard_new/consts/colors.dart';
 import 'package:dashboard_new/consts/styles.dart';
+import 'package:dashboard_new/routes/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-import 'package:get/get.dart';
-
-class DetailScreen extends StatelessWidget {
+class DetailScreen extends ConsumerWidget {
   final Orderr order;
   final Customer getCustomer;
 
@@ -19,13 +19,13 @@ class DetailScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // Add the back arrow icon
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop(); // Handle the back button press
+            Navigator.of(context).pop();
           },
         ),
         title: Padding(
@@ -33,8 +33,8 @@ class DetailScreen extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
-                color: Colors.white70, // You can change the border color here
-                width: 2.0, // You can adjust the border width here
+                color: Colors.white70,
+                width: 2.0,
               ),
               borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
@@ -52,12 +52,9 @@ class DetailScreen extends StatelessWidget {
             ),
           ),
         ),
-
-        backgroundColor: Colors.red, // Set the background color of the app bar
-        elevation: 10, // Adjust the elevation to add drop shadow
-        shadowColor: Colors.grey.withOpacity(
-          0.5,
-        ), // Set the color of the drop shadow
+        backgroundColor: Colors.red,
+        elevation: 10,
+        shadowColor: Colors.grey.withOpacity(0.5),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -88,7 +85,7 @@ class DetailScreen extends StatelessWidget {
                             offset: const Offset(0, 2),
                           ),
                         ],
-                      ), // Set background color to light red
+                      ),
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,17 +110,17 @@ class DetailScreen extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),
-              color: Colors.white, // Set background color to white
+              color: Colors.white,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10.0),
                   boxShadow: [
                     BoxShadow(
-                      color: redColor.withOpacity(0.1), // Set shadow color
+                      color: redColor.withOpacity(0.1),
                       spreadRadius: 4,
                       blurRadius: 2,
-                      offset: const Offset(0, 2), // changes position of shadow
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
@@ -156,13 +153,12 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 20.0),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  acceptOrder(order.expId, order);
+                  acceptOrder(context, order.expId, order);
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -177,14 +173,12 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 10.0),
-
             SizedBox(
-              width: double.infinity, //150,
+              width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  deleteOrder(order);
+                  deleteOrder(context, order);
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -199,36 +193,6 @@ class DetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-            // SizedBox(
-            //   width: 150,
-            //   child: ElevatedButton(
-            //     onPressed: () {
-            //       showDialog(
-            //           context: context,
-            //           builder: (BuildContext context) {
-            //             return AlertDialog(
-            //               title: Text("Message Tailor"),
-            //               content: Text(
-            //                   "Only customers can message tailors first."),
-            //               actions: [
-            //                 TextButton(
-            //                   onPressed: () {
-            //                     Navigator.of(context)
-            //                         .pop(); // Close the dialog
-            //                   },
-            //                   child: Text("OK"),
-            //                 ),
-            //               ],
-            //             );
-            //           });
-            //     },
-            //     child: Text(
-            //       'Chat',
-            //       style: TextStyle(fontSize: 16.0),
-            //     ),
-            //   ),
-            // ),
             const SizedBox(height: 10.0),
           ],
         ),
@@ -309,21 +273,24 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  Future<void> acceptOrder(String tailorId, Orderr order) async {
-    String orderId =
-        order.getDocumentId() ?? ''; // Retrieve the document ID from Orderr
+  Future<void> acceptOrder(BuildContext context, String tailorId, Orderr order) async {
+    String orderId = order.getDocumentId() ?? '';
     await FirebaseFirestore.instance.collection('orders').doc(orderId).update({
       'tailorId': tailorId,
       'status': 'Running',
       'expectedTailorId': "",
     });
 
-    Get.offAll(() => const Home_Tailor());
+    if (context.mounted) {
+      context.go(AppRoutes.tailorHome);
+    }
   }
 
-  Future<void> deleteOrder(Orderr order) async {
+  Future<void> deleteOrder(BuildContext context, Orderr order) async {
     String orderId = order.getDocumentId() ?? '';
     await FirebaseFirestore.instance.collection('orders').doc(orderId).delete();
-    Get.offAll(() => const Home_Tailor());
+    if (context.mounted) {
+      context.go(AppRoutes.tailorHome);
+    }
   }
 }

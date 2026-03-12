@@ -1,19 +1,16 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dashboard_new/Customer_views/home_screen/home.dart';
 import 'package:dashboard_new/Customer_views/measurements/showMeasure.dart';
 import 'package:dashboard_new/Customer_views/services/chatt/chat_home.dart';
 import 'package:dashboard_new/Model_Classes/customer_class.dart';
 import 'package:dashboard_new/Model_Classes/order_class.dart';
-import 'package:dashboard_new/Tailor_views/home_screen/home.dart';
+import 'package:dashboard_new/consts/consts.dart';
+import 'package:dashboard_new/routes/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../consts/consts.dart';
-
-class SampleItemDetailsView extends StatefulWidget {
+class SampleItemDetailsView extends ConsumerStatefulWidget {
   final Orderr order;
   final bool isTailor;
 
@@ -21,10 +18,10 @@ class SampleItemDetailsView extends StatefulWidget {
       {super.key, required this.order, required this.isTailor});
 
   @override
-  State<SampleItemDetailsView> createState() => _SampleItemDetailsViewState();
+  ConsumerState<SampleItemDetailsView> createState() => _SampleItemDetailsViewState();
 }
 
-class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
+class _SampleItemDetailsViewState extends ConsumerState<SampleItemDetailsView> {
   late Customer getCustomer;
   bool _isLoading = true;
 
@@ -45,8 +42,8 @@ class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
           child: Container(
             decoration: BoxDecoration(
               border: Border.all(
-                color: Colors.white70, // You can change the border color here
-                width: 2.0, // You can adjust the border width here
+                color: Colors.white70,
+                width: 2.0,
               ),
               borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
@@ -81,9 +78,7 @@ class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: SizedBox(
-                        width: MediaQuery.of(context)
-                            .size
-                            .width, // Set width to screen width
+                        width: MediaQuery.of(context).size.width,
                         child: Card(
                           elevation: 4.0,
                           shape: RoundedRectangleBorder(
@@ -101,7 +96,7 @@ class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
                                   offset: const Offset(0, 2),
                                 ),
                               ],
-                            ), // Set background color to light red
+                            ),
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,19 +126,17 @@ class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    color: Colors.white, // Set background color to white
+                    color: Colors.white,
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10.0),
                         boxShadow: [
                           BoxShadow(
-                            color:
-                                redColor.withOpacity(0.1), // Set shadow color
+                            color: redColor.withOpacity(0.1),
                             spreadRadius: 4,
                             blurRadius: 2,
-                            offset: const Offset(
-                                0, 2), // changes position of shadow
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
@@ -176,37 +169,6 @@ class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 20.0),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //   children: [
-                  //     SizedBox(
-                  //       width: 150,
-                  //       child: ElevatedButton(
-                  //         onPressed: () {
-                  //           deleteOrder(widget.order);
-                  //         },
-                  //         child: Text(
-                  //           'Decline',
-                  //           style: TextStyle(fontSize: 16.0),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     SizedBox(
-                  //       width: 150,
-                  //       child: ElevatedButton(
-                  //         onPressed: () {
-                  //           // Handle button tap
-                  //         },
-                  //         child: Text(
-                  //           'Chat',
-                  //           style: TextStyle(fontSize: 16.0),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   const SizedBox(height: 10.0),
                   button(),
                 ],
@@ -225,7 +187,7 @@ class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  CompleteOrder(widget.order.expId, widget.order);
+                  CompleteOrder(context, widget.order.expId, widget.order);
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -279,20 +241,15 @@ class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
               child: ElevatedButton(
                 onPressed: () async {
                   try {
-                    // Assuming you have the tailor's ID available
                     String? tailorId = widget.order.tailorId;
-                    // Get the current customer's ID
                     String customerId = currentUser!.uid;
-                    // Add tailor's ID to the customer's chat list
-                    log("customer ID $customerId");
-                    log("tailorid $tailorId");
                     await addToChatList(customerId, tailorId!);
-                    // Navigate to the chat page
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => chatHome()));
+                    if (mounted) {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => chatHome()));
+                    }
                   } catch (e) {
                     print("Error: $e");
-                    // Handle error
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -315,7 +272,7 @@ class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  deleteOrder(widget.order);
+                  deleteOrder(context, widget.order);
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -426,112 +383,96 @@ class _SampleItemDetailsViewState extends State<SampleItemDetailsView> {
           .get();
 
       if (customerSnapshot.exists) {
-        // If customer exists, update the state with the retrieved data
-        setState(() {
-          getCustomer = Customer.fromFirestore(customerSnapshot);
-          _isLoading = false; // Set loading flag to false
-        });
+        if (mounted) {
+          setState(() {
+            getCustomer = Customer.fromFirestore(customerSnapshot);
+            _isLoading = false;
+          });
+        }
       } else {
         throw Exception('Customer not found');
       }
     } catch (e) {
-      // Handle exception if customer not found or any other error occurs
       print(e.toString());
     }
   }
 
-  Future<void> CompleteOrder(String tailorId, Orderr order) async {
-    String orderId =
-        order.getDocumentId() ?? ''; // Retrieve the document ID from Orderr
+  Future<void> CompleteOrder(BuildContext context, String tailorId, Orderr order) async {
+    String orderId = order.getDocumentId() ?? '';
     await FirebaseFirestore.instance.collection('orders').doc(orderId).update({
       'status': 'completed',
     });
 
-    Get.offAll(() => const Home_Tailor());
+    if (context.mounted) {
+      context.go(AppRoutes.tailorHome);
+    }
   }
 
-  Future<void> deleteOrder(Orderr order) async {
+  Future<void> deleteOrder(BuildContext context, Orderr order) async {
     String orderId = order.getDocumentId() ?? '';
     await FirebaseFirestore.instance.collection('orders').doc(orderId).delete();
-    Get.offAll(() => const Home());
+    if (context.mounted) {
+      context.go(AppRoutes.customerHome);
+    }
   }
 
   Future<void> addToChatList(String customerId, String tailorId) async {
     try {
-      log("in chat list");
-      // Get the current chat list of the customer
       DocumentSnapshot customerSnapshot = await FirebaseFirestore.instance
           .collection(usersCollection)
           .doc(customerId)
           .get();
 
       if (customerSnapshot.exists) {
-        log("in if");
-        // Extract chatList and cast it to List<String>
         List<String> currentChatList = List<String>.from(
             (customerSnapshot.data() as Map<String, dynamic>?)?['chatlist']
                     ?.cast<String>() ??
                 []);
 
-        log("curr $currentChatList");
-
-        // Add tailor's ID only if it's not already in the list
         if (!currentChatList.contains(tailorId)) {
           currentChatList.add(tailorId);
-
-          log("current $currentChatList");
-
-          // Update the document with the modified chat list
           await FirebaseFirestore.instance
               .collection(usersCollection)
               .doc(customerId)
               .update({'chatlist': currentChatList});
 
           addToTailorChatList(customerId, tailorId);
-          log("current chat list$currentChatList");
         }
       } else {
         throw Exception('Customer not found');
       }
     } catch (e) {
       print(e.toString());
-      rethrow; // Re-throw the exception for handling in calling function
+      rethrow;
     }
   }
 
   Future<void> addToTailorChatList(String customerId, String tailorId) async {
     try {
-      // Get the current chat list of the customer
-      DocumentSnapshot TailorSnapshot = await FirebaseFirestore.instance
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
           .collection(usersCollection1)
           .doc(tailorId)
           .get();
 
-      if (TailorSnapshot.exists) {
-        // Extract chatList and cast it to List<String>
+      if (snapshot.exists) {
         List<String> currentChatList = List<String>.from(
-            (TailorSnapshot.data() as Map<String, dynamic>?)?['chatlist']
+            (snapshot.data() as Map<String, dynamic>?)?['chatlist']
                     ?.cast<String>() ??
                 []);
 
-        log("current chat list");
-
-        // Add tailor's ID only if it's not already in the list
         if (!currentChatList.contains(customerId)) {
           currentChatList.add(customerId);
-
-          // Update the document with the modified chat list
           await FirebaseFirestore.instance
               .collection(usersCollection1)
               .doc(tailorId)
               .update({'chatlist': currentChatList});
         }
       } else {
-        throw Exception('Customer not found');
+        throw Exception('Tailor not found');
       }
     } catch (e) {
       print(e.toString());
-      rethrow; // Re-throw the exception for handling in calling function
+      rethrow;
     }
   }
 }

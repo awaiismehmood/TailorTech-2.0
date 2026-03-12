@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:math' show atan2, cos, pi, sin, sqrt;
 import 'package:dashboard_new/Customer_views/Find_tailor/tailors_loc.dart';
-import 'package:dashboard_new/controllers/auth_controller.dart';
 import 'package:dashboard_new/Customer_views/Find_tailor/tailor_profile.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -18,7 +16,6 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   final Location _locationController = Location();
-  var controller1 = Get.put(AuthController());
 
   List<Map<String, dynamic>> tailorLocations = [];
 

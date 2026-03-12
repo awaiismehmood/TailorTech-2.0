@@ -3,11 +3,12 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dashboard_new/Customer_views/Find_tailor/map_page.dart';
 import 'package:dashboard_new/Model_Classes/order_class.dart';
 import 'package:dashboard_new/consts/consts.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:dashboard_new/routes/app_router.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class TailorInfoScreen extends StatefulWidget {
@@ -58,12 +59,7 @@ class _TailorInfoScreenState extends State<TailorInfoScreen> {
       // Navigate to the map page (you need to implement the map page navigation logic)
 
       log("iam on navigator");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MapPage(
-                    orderId: orderId,
-                  )));
+      context.push('${AppRoutes.mapPage}?orderId=$orderId');
 
       setState(() {
         _isLoading = false;

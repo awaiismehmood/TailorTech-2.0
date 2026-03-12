@@ -1,21 +1,17 @@
 import 'package:dashboard_new/Model_Classes/customer_class.dart';
-import 'package:dashboard_new/Customer_views/measurements/measurements.dart';
-import 'package:dashboard_new/Customer_views/Find_tailor/order_place.dart';
+import 'package:dashboard_new/routes/app_router.dart';
 import 'package:dashboard_new/widgets_common/exercise_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerWidget {
   final Customer customer;
   const HomePage({required this.customer, super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     DateTime currentDate = DateTime.now();
     String formattedDate =
         "${currentDate.day}-${currentDate.month}-${currentDate.year}";
@@ -26,7 +22,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/bgo.png', // Replace with your asset image path
+              'assets/images/bgo.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -39,7 +35,6 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Column(
                       children: [
-                        //greeting row
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -47,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Hi ${widget.customer.name}", //greeting,
+                                  "Hi ${customer.name}",
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
@@ -65,27 +60,20 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
-
-                        // search bar
-
                         const SizedBox(
                           height: 25,
                         ),
-
                         SizedBox(
-                          height: 250, // Adjust the height as needed
-                          width: 300, // Adjust the width as needed
+                          height: 250,
+                          width: 300,
                           child: Lottie.network(
                             "https://lottie.host/20f2c37a-0579-49b9-993c-1a59c2d1c75c/9EiI0vKj7O.json",
                             fit: BoxFit.contain,
                           ),
                         ),
-
                         const SizedBox(
                           height: 25,
                         ),
-
-                        // 4 different
                       ],
                     ),
                   ),
@@ -103,7 +91,6 @@ class _HomePageState extends State<HomePage> {
                         child: Center(
                           child: Column(
                             children: [
-                              //Exercises
                               const Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -120,17 +107,12 @@ class _HomePageState extends State<HomePage> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              //list view of exercises
                               Expanded(
                                 child: ListView(
                                   children: [
                                     ExerciseTile(
                                       onpress: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const MeasurementScreen()));
+                                        context.push(AppRoutes.customerMeasurements);
                                       },
                                       icon: Icons.miscellaneous_services,
                                       exerciseName: "Measurements",
@@ -139,11 +121,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     ExerciseTile(
                                       onpress: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const TailorInfoScreen()));
+                                        context.push(AppRoutes.tailorInfo);
                                       },
                                       icon: Icons.more,
                                       exerciseName: "find tailor",

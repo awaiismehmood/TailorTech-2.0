@@ -1,17 +1,23 @@
 import 'package:dashboard_new/consts/colors.dart';
-import 'package:dashboard_new/controllers/auth_controller.dart';
+import 'package:dashboard_new/controllers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ForgotPassword extends StatefulWidget {
+class ForgotPassword extends ConsumerStatefulWidget {
   const ForgotPassword({super.key});
 
   @override
-  State<ForgotPassword> createState() => _ForgotPasswordState();
+  ConsumerState<ForgotPassword> createState() => _ForgotPasswordState();
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
   final _email = TextEditingController();
-  final _auth = AuthController();
+
+  @override
+  void dispose() {
+    _email.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +49,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       ),
       body: Stack(
         children: [
-          // Background image with low opacity
           Opacity(
-            opacity: 0.4, // Adjust opacity as needed
+            opacity: 0.4,
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
@@ -97,22 +102,24 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     String email = _email.text.trim();
                     if (email.isNotEmpty) {
                       try {
-                        await _auth.sendPasswordReset(email);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Password reset email sent to $email',
+                        await ref.read(authProvider.notifier).sendPasswordReset(email);
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Password reset email sent to $email'),
+                              backgroundColor: Colors.green,
                             ),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
+                          );
+                        }
                       } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Error: $e'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error: $e'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(

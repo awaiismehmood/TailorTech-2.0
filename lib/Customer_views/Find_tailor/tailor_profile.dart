@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart' hide CarouselController;
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dashboard_new/Customer_views/home_screen/home.dart';
 import 'package:dashboard_new/Model_Classes/tailor_class.dart';
 import 'package:dashboard_new/consts/consts.dart';
+import 'package:dashboard_new/routes/app_router.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class TailorShow extends StatefulWidget {
+class TailorShow extends ConsumerStatefulWidget {
   final String orderId;
   final String tailorId;
   const TailorShow({super.key, required this.orderId, required this.tailorId});
 
   @override
-  State<TailorShow> createState() => _TailorShowState();
+  ConsumerState<TailorShow> createState() => _TailorShowState();
 }
 
-class _TailorShowState extends State<TailorShow> {
+class _TailorShowState extends ConsumerState<TailorShow> {
   Tailor? tailor;
   final double coverHeight = 280;
   final double profileHeight = 144;
-  final CarouselSliderController carouselController = CarouselSliderController();
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
   int currentIndex = 0;
 
   @override
@@ -34,9 +36,7 @@ class _TailorShowState extends State<TailorShow> {
     return tailor == null
         ? const Scaffold(
             backgroundColor: whiteColor,
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+            body: Center(child: CircularProgressIndicator()),
           )
         : Scaffold(
             backgroundColor: whiteColor,
@@ -53,10 +53,11 @@ class _TailorShowState extends State<TailorShow> {
                   ),
                   onPressed: () {
                     _confirmOrder(widget.tailorId);
-                    Get.offAll(() => const Home());
+                    if (mounted) {
+                      context.go(AppRoutes.customerHome);
+                    }
                   },
-                  child: "Place Order"
-                      .text
+                  child: "Place Order".text
                       .color(whiteColor)
                       .fontFamily(bold)
                       .make(),
@@ -74,7 +75,10 @@ class _TailorShowState extends State<TailorShow> {
         Text(
           "${tailor?.name}",
           style: const TextStyle(
-              fontSize: 28, fontWeight: FontWeight.bold, fontFamily: bold),
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            fontFamily: bold,
+          ),
         ),
         const SizedBox(height: 2),
         Text(
@@ -87,7 +91,10 @@ class _TailorShowState extends State<TailorShow> {
         const Text(
           "Price Range:",
           style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, fontFamily: bold),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontFamily: bold,
+          ),
         ),
         const SizedBox(height: 8),
         Text(
@@ -114,23 +121,26 @@ class _TailorShowState extends State<TailorShow> {
           const Text(
             "Details",
             style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w500,
-                fontFamily: semibold),
+              fontSize: 30,
+              fontWeight: FontWeight.w500,
+              fontFamily: semibold,
+            ),
           ),
           Text(
             tailor!.details,
             style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w200,
-                fontFamily: semibold),
+              fontSize: 16,
+              fontWeight: FontWeight.w200,
+              fontFamily: semibold,
+            ),
           ),
           const Text(
             "Ratings",
             style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w500,
-                fontFamily: semibold),
+              fontSize: 30,
+              fontWeight: FontWeight.w500,
+              fontFamily: semibold,
+            ),
           ),
           const SizedBox(height: 10),
           ratings(),
@@ -147,17 +157,19 @@ class _TailorShowState extends State<TailorShow> {
       alignment: Alignment.center,
       children: [
         Container(
-            margin: EdgeInsets.only(bottom: bottom), child: sliderImage()),
+          margin: EdgeInsets.only(bottom: bottom),
+          child: sliderImage(),
+        ),
         Positioned(top: top, child: buildProfileImage()),
       ],
     );
   }
 
   Widget buildProfileImage() => CircleAvatar(
-        radius: profileHeight / 2,
-        backgroundColor: whiteColor,
-        backgroundImage: NetworkImage(tailor!.profile_url),
-      );
+    radius: profileHeight / 2,
+    backgroundColor: whiteColor,
+    backgroundImage: NetworkImage(tailor!.profile_url),
+  );
 
   Widget sliderImage() {
     return CarouselSlider(
@@ -207,10 +219,7 @@ class _TailorShowState extends State<TailorShow> {
     await FirebaseFirestore.instance
         .collection('orders')
         .doc(widget.orderId)
-        .update({
-      'expectedTailorId': tailorId,
-      'status': "Pending",
-    });
+        .update({'expectedTailorId': tailorId, 'status': "Pending"});
   }
 
   void fetchDetails(String id) async {

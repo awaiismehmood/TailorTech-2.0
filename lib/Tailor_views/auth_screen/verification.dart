@@ -1,16 +1,14 @@
 import 'package:dashboard_new/consts/colors.dart';
 import 'package:dashboard_new/consts/consts.dart';
-import 'package:dashboard_new/controllers/auth_controller.dart';
+import 'package:dashboard_new/controllers/auth_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// ignore: camel_case_types
-class VerifyUser extends StatelessWidget {
+class VerifyUser extends ConsumerWidget {
   const VerifyUser({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var controller = Get.put(AuthController());
+  Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: whiteColor,
@@ -40,10 +38,10 @@ class VerifyUser extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               ElevatedButton(
-                onPressed: () => controller.signoutMethod(context),
+                onPressed: () => ref.read(authProvider.notifier).signOut(context),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: whiteColor,
-                  backgroundColor: Colors.red, // Text color
+                  backgroundColor: Colors.red,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 40,
                     vertical: 15,
